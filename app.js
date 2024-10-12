@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const connect = require('./connoctDB');
-const ADDTASK = require('./schema')
+const ADDTASK = require('./schema');
+const SONGADDED = require('./audio_schema');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 // Connect to MongoDB
@@ -90,7 +91,48 @@ app.put('/update-task', async (req, res) => {
     }
 });
 
+app.post('/song-upload', async (req,res)=>{
+  if(!req.body){
+    res.status(401).send({ status:401, statusText: "Send request failed" });
+  }
+  const result = await SONGADDED.create(req.body);
+  if(result){
+    res.status(200).send({ status: 200, statusText: "Song uploaded successfully" });
+  }
+  else{
+    res.status(400).send({ status: 400, statusText: "Failed to upload song" });
+  }
+})
 
+app.get('/song-list', async (req, res)=> {
+  const songs = await SONGADDED.find({});
+  if (!songs) {
+    res.status(400).send({ status: 400, statusText: 'No songs found' });
+  }  else {
+    res.status(200).send({ status: 200, statusText: songs });
+  }
+})
+app.post('/schedule-task', async (req,res)=>{
+  if(!req.body){
+    res.status(401).send({ status:401, statusText: "Send request failed" });
+  }
+  const result = await SCHEDULESCHEMA.create(req.body);
+  if(result){
+    res.status(200).send({ status: 200, statusText: "scheduled successfully" });
+  }
+  else{
+    res.status(400).send({ status: 400, statusText: "Failed to scheduled" });
+  }
+})
+
+app.get('/schedule-task-list', async (req, res)=> {
+  const songs = await SCHEDULESCHEMA.find({});
+  if (!songs) {
+    res.status(400).send({ status: 400, statusText: 'scheduled task no found' });
+  }  else {
+    res.status(200).send({ status: 200, statusText: songs });
+  }
+})
 
 // Start the server
 app.listen(8000, () => {
