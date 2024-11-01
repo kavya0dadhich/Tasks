@@ -3,6 +3,7 @@ const app = express();
 const connect = require('./connoctDB');
 const ADDTASK = require('./schema');
 const SONGADDED = require('./audio_schema');
+const SCHEDULESCHEMA = require('./schdule_schema');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 // Connect to MongoDB
